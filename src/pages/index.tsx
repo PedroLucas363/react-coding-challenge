@@ -13,18 +13,6 @@ import {
   Text,
   Thead,
   Tr,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
   Spinner,
   IconButton,
   Th,
@@ -34,10 +22,11 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import Template from '@/components/Template';
 import { IMessage } from '@/common/types';
-import { listMessages, removeMessage, createMessage } from '@/fakeApi';
+import { listMessages, removeMessage } from '@/fakeApi';
 
 import DangerConfirmation from '@/components/ConfirmationModal';
 import MessageModal from '@/components/MessageModal';
+import NewMessageModal from '@/components/NewMessageModal/index';
 
 export default function Home() {
   const toast = useToast();
@@ -77,39 +66,6 @@ export default function Home() {
     toast({
       status: 'success',
       title: 'Message removed successfully',
-    });
-  };
-
-  const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const [subject, setSubject] = useState('');
-  const [recipient, setRecipient] = useState('');
-  const [content, setContent] = useState('');
-
-  const [sending, setSending] = useState(false);
-
-  const handleSendMessage = async (): Promise<void> => {
-    setSending(true);
-
-    const { data } = await createMessage({
-      user: {
-        email: recipient,
-      },
-      message: content,
-      subject,
-    });
-
-    setMessages([...messages, data]);
-
-    setRecipient('');
-    setContent('');
-    setSubject('');
-    onClose();
-
-    setSending(false);
-    toast({
-      status: 'success',
-      title: 'Message sent successfully',
     });
   };
 
@@ -187,7 +143,7 @@ export default function Home() {
                       isLoading={removingId === message._id}
                       size="sm"
                     />
-                    )}
+                  )}
                   action={() => handleRemoveMessage(message)}
                 />
               </Td>
@@ -214,55 +170,10 @@ export default function Home() {
             Messages
           </Heading>
           <Box>
-            <Button onClick={onOpen} colorScheme="blue">
-              New Message
-            </Button>
-
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent maxW="800px">
-                <ModalHeader>New message</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <FormControl mb="24px">
-                    <FormLabel>Subject</FormLabel>
-                    <Input
-                      value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Recipient</FormLabel>
-                    <Input
-                      value={recipient}
-                      onChange={(e) => setRecipient(e.target.value)}
-                      placeholder="someone@mail.com"
-                    />
-                  </FormControl>
-                  <FormControl mt="24px">
-                    <FormLabel>My message</FormLabel>
-                    <Textarea
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                    />
-                  </FormControl>
-                </ModalBody>
-
-                <ModalFooter>
-                  <Button variant="ghost" mr={3} onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSendMessage}
-                    isDisabled={!subject || !recipient || !content}
-                    colorScheme="blue"
-                    isLoading={sending}
-                  >
-                    Send message
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+            <NewMessageModal
+              button={<Button colorScheme="blue">New Message</Button>}
+              setMessages={setMessages}
+            />
           </Box>
         </HStack>
         {loading ? <Spinner /> : renderMessages()}
