@@ -10,8 +10,6 @@
         "plugin:react/recommended",
         "plugin:react/jsx-runtime"
     ],
-    "overrides": [
-    ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2018,
@@ -31,7 +29,18 @@
         "no-underscore-dangle": "off",
         "react/display-name": "off",
         "react/function-component-definition": [2, { "namedComponents": "function-declaration" }],
-        "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".test.js", ".tsx", ".test.ts"] }],
-        "react/require-default-props": "off"
-    }
+        "react/require-default-props": "off",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+              "": "never",
+              "js": "never",
+              "jsx": "never",
+              "ts": "never",
+              "tsx": "never"
+            }
+         ]
+    },
+    "overrides": []
 }
